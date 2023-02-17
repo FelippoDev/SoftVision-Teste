@@ -28,7 +28,7 @@ class CursoView(MethodView):
         return jsonify(curso)
     
     def post(self):
-        breakpoint()
+        # breakpoint()
         data = request.get_json()
         try:
             curso = self.schema().load(data)

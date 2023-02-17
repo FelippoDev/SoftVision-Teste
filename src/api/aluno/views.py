@@ -25,6 +25,8 @@ class AlunoView(MethodView):
     def get(self, id):
         aluno = self.model.query.get_or_404(id)
         aluno = self.schema().dump(aluno)
+        # aluno = json.loads(aluno)
+        # breakpoint()
         return jsonify(aluno)
     
     def post(self):
