@@ -9,3 +9,4 @@ class AlunoModel(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     status = db.Column(db.Boolean, default=False)
     data_nascimento = db.Column(db.Date, nullable=False)
+    cursos = db.relationship("CursoModel", back_populates="alunos", secondary="matriculas")

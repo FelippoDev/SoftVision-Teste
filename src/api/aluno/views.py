@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
-from . import schemas
+from src.api.matricula import schemas
 from src.models.alunos import AlunoModel
 from src.db import db
 from marshmallow import ValidationError

@@ -1,5 +1,4 @@
 from flask import Blueprint
-from . import views
 from src.api.aluno.views import AlunoListView, AlunoView
 from src.api.curso.views import CursoListView, CursoView
 

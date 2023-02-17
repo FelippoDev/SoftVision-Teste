@@ -10,3 +10,4 @@ class CursoModel(db.Model):
     sequencia = db.Column(db.Integer)
     preco_venda = db.Column(db.Float(precision=2), nullable=False)
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    alunos = db.relationship("AlunoModel", back_populates="cursos", secondary="matriculas")

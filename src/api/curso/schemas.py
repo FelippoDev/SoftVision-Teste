@@ -2,15 +2,14 @@ from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import SQLAlchemySchema
 
 from src.models.cursos import CursoModel
-    
-class CursoSchema(Schema):
+
+class PlainCursoSchema(Schema):
     class Meta:
         model = CursoModel
         include_relationships = True
         load_instance = True
         
-        
-    id = fields.Integer()    
+    id = fields.Integer(dump_only=True)    
     nome = fields.String(required=True)
     status = fields.Boolean(required=True)
     slug = fields.String()
@@ -18,8 +17,7 @@ class CursoSchema(Schema):
     preco_venda = fields.Decimal()
     data_cadastro = fields.DateTime()
     
-
-
+    
 # class CursoUpdateSchema(Schema):
 #     id = fields.Number(as_string=True)
 #     nome = fields.String(required=True)
