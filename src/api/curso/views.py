@@ -50,7 +50,7 @@ class CursoView(MethodView):
             db.session.add(curso)
             db.session.commit()
         except IntegrityError as error:
-            return {"error": "Já existe um curso com estes dados."}
+            return {"error": "This curso already exists."}
         
         return jsonify(self.schema().dump(curso)), 201
     
@@ -58,7 +58,7 @@ class CursoView(MethodView):
         data = request.get_json()
         curso = self.model.query.get(id)
         if curso is None:
-            return jsonify({'error': 'Curso não encontrado.'}), 404
+            return jsonify({'error': 'Curso Not Found.'}), 404
         
         curso.nome = data['nome']
         curso.preco_venda = data['preco_venda']
