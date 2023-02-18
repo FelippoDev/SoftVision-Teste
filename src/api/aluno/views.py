@@ -50,7 +50,10 @@ class AlunoView(MethodView):
             db.session.add(aluno)
             db.session.commit()
         except IntegrityError as error:
-            return {"error": "Already is a aluno with that data."}
+            if self.model.query.filter_by(email=aluno.email):
+                return jsonify("Already is an user with that email."), 400
+            if self.model.query.filter_by(email=aluno.cpf):
+                jsonify("Already is an user with that CPF."), 400
         
         return jsonify(self.schema().dump(aluno)), 201
     

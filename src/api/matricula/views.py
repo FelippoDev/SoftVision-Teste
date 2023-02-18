@@ -17,19 +17,22 @@ class MatriculaView(MethodView):
     model = MatriculaModel
     
     def get(self):
-        # breakpoint()
         matriculas = self.model.query.all()
         return jsonify(self.schema(many=True).dump(matriculas)), 200
     
     def post(self, curso_id, aluno_id):
-        # breakpoint()
         aluno = AlunoModel.query.get(aluno_id)
         if not aluno:
             return jsonify("Aluno not found."), 404
         curso = CursoModel.query.get(curso_id)
         if not curso:
             return jsonify("Curso not found."), 404
-        
+       
+        cursos = aluno.cursos
+        for c in cursos:
+            if c.id == curso.id:
+                return jsonify("Matricula already made."), 400
+            
         matricula = {
             "aluno": aluno.id,
             "curso": curso.id,
@@ -45,22 +48,18 @@ class MatriculaView(MethodView):
     
     def put(self, id):
         data = request.get_json()
-        curso = self.model.query.get(id)
-        if curso is None:
-            return jsonify({'error': 'Curso não encontrado.'}), 404
+        matricula = self.model.query.get(id)
+        if matricula is None:
+            return jsonify({'error': 'Matricula Not Found.'}), 404
         
-        curso.nome = data['nome']
-        curso.preco_venda = data['preco_venda']
-        curso.sequencia = data['sequencia']
-        db.session.add(curso)
+        if not matricula.status:
+            if data['status']:
+                matricula.data_cadastro = datetime.utcnow()
+            
+        matricula.status = data['status']
+   
+        db.session.add(matricula)
         db.session.commit()
-        return jsonify(self.schema().dump(curso)), 201
+        return jsonify(self.schema().dump(matricula)), 201
     
-    def delete(self, id):
-        curso = self.model.query.get(id)
-        if curso is None:
-            return jsonify({'error': 'Curso não encontrado.'}), 404
-        db.session.delete(curso)
-        db.session.commit()
-        return jsonify({'message:': "Curso deletado com sucesso."}), 202
     
