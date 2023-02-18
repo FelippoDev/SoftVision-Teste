@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
@@ -23,10 +23,19 @@ class AlunoView(MethodView):
     model = AlunoModel
     
     def get(self, id):
-        aluno = self.model.query.get_or_404(id)
+        """Method for retrieving a specific aluno
+
+        Args:
+            id: aluno_id
+
+        Returns:
+            A JSON data containing the aluno information
+        """
+        aluno = self.model.query.get(id)
+        if not aluno:
+            return jsonify("Aluno not found"), 404
+        
         aluno = self.schema().dump(aluno)
-        # aluno = json.loads(aluno)
-        # breakpoint()
         return jsonify(aluno)
     
     def post(self):
@@ -41,7 +50,7 @@ class AlunoView(MethodView):
             db.session.add(aluno)
             db.session.commit()
         except IntegrityError as error:
-            return {"error": "There already is a aluno with that data."}
+            return {"error": "Already is a aluno with that data."}
         
         return jsonify(self.schema().dump(aluno)), 201
     

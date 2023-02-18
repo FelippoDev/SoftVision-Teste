@@ -2,11 +2,20 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+import unicodedata
+import re
 
 from src.api.matricula import schemas
 from src.models.cursos import CursoModel
 from src.db import db
 from marshmallow import ValidationError
+
+
+def slugify(text):
+    slug = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+    slug = re.sub(r'[^\w\s-]', '', slug.decode('utf-8')).strip().lower()
+    slug = re.sub(r'[-\s]+', '-', slug)
+    return slug
 
 class CursoListView(MethodView):
     schema = schemas.CursoSchema
@@ -28,14 +37,13 @@ class CursoView(MethodView):
         return jsonify(curso)
     
     def post(self):
-        # breakpoint()
         data = request.get_json()
         try:
             curso = self.schema().load(data)
         except ValidationError as error:
             return {"errors": error.messages}, 400
         
-        curso['slug'] = curso['nome'].replace(' ','-').lower()
+        curso['slug'] = slugify(curso['nome'])
         
         try:
             curso = self.model(**curso)
@@ -62,8 +70,8 @@ class CursoView(MethodView):
     def delete(self, id):
         curso = self.model.query.get(id)
         if curso is None:
-            return jsonify({'error': 'Curso não encontrado.'}), 404
+            return jsonify({'error': 'Curso Not Found.'}), 404
         db.session.delete(curso)
         db.session.commit()
-        return jsonify({'message:': "Curso deletado com sucesso."}), 202
+        return jsonify({'message:': "Curso deleted."}), 202
     
