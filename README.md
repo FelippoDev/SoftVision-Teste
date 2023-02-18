@@ -64,7 +64,7 @@ Starting with the Aluno data we have the following endpoints:
     "nome": "Terapia Comportamental",
     "preco_venda": 49.90,
     "sequencia": 4
-} ``
+} ```
 
 ```GET /api/curso/list``` returns a list containing all the Curso data from the database.
 
